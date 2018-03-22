@@ -74,6 +74,8 @@ S3Adapter.prototype.uploadFile = function (file, callback) {
 
         file.path = self.options.path[0] == '/' ? self.options.path.substr(1, self.options.path.length) : self.options.path;
         file.filename = filename;
+	    
+	var key = file.path + '/' + file.subdir + '/' + filename;
 
         // Figure out headers
         var headers = assign({}, self.options.headers, {
@@ -86,7 +88,7 @@ S3Adapter.prototype.uploadFile = function (file, callback) {
 
             s3Params: {
                 Bucket: self.options.bucket,
-                Key: file.path + '/' + filename,
+                Key: key,
                 ACL: 'public-read',
             },
         });
@@ -97,13 +99,25 @@ S3Adapter.prototype.uploadFile = function (file, callback) {
 
         //Progress Of Upload - Can Be Logged
 
-        // uploader.on('progress', function () {
-        //     console.log("progress", uploader.progressMd5Amount,
-        //         uploader.progressAmount, uploader.progressTotal);
-        // });
+        uploader.on('progress', function () {
+            // let progressAmount = 0
+            // let progressTotal = 0
+            // if (uploader.progressTotal > 1024 * 1024) {
+            //     progressAmount = (Math.round(uploader.progressAmount * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+            //     progressTotal = (Math.round(uploader.progressTotal * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+            // } else {
+            //     progressAmount = (Math.round(uploader.progressAmount * 100 / 1024) / 100).toString() + 'KB';
+            //     progressTotal = (Math.round(uploader.progressTotal * 100 / 1024) / 100).toString() + 'KB';
+            // }
+            // console.log('progress',
+            //     progressAmount + ' of ' + progressTotal + ' | ' +
+            //     Math.round(uploader.progressAmount * 100 / uploader.progressTotal)
+            //     + '%'
+            // );
+        });
 
         uploader.on('end', function () {
-            file.key = file.path + '/' + filename
+            file.key = key;
             callback(null, file);
         });
     });
