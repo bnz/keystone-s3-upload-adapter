@@ -11,7 +11,7 @@
   "dependencies": {
     "keystone-storage-namefunctions": "^1.1.1",
     "object-assign": "^4.1.1",
-    "s3": "git+https://github.com/danish1994/node-s3-client.git"
+    "s3": "git+https://github.com/bnz/node-s3-client.git"
   },
   "repository": {
     "type": "git",
